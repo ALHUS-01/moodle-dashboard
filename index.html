@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم مهام المودل - حسام</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0a0a0e',
+                        cardBg: '#15151a',
+                        cardBorder: '#23232c',
+                        accentPurple: '#7c3aed',
+                        accentGreen: '#10b981',
+                        textMuted: '#9ca3af',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0e;
+            color: #f3f4f6;
+            font-family: 'Cairo', sans-serif;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0e; }
+        ::-webkit-scrollbar-thumb { background: #23232c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f4e; }
+        .glass-panel {
+            background: rgba(21, 21, 26, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(35, 35, 44, 0.8);
+        }
+        .skeleton {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-6 lg:p-8">
+
+    <!-- Top Navigation -->
+    <nav class="max-w-5xl mx-auto flex items-center justify-between mb-8 glass-panel rounded-2xl p-4">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-cardBorder flex items-center justify-center cursor-pointer hover:bg-gray-700 transition">
+                <i class="ph ph-student text-xl text-accentPurple"></i>
+            </div>
+            <div class="text-sm font-semibold text-gray-400">
+                <span class="text-gray-200" id="current-date-display">جاري التحميل...</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div id="sync-status" class="text-xs text-green-400 flex items-center gap-1 hidden">
+                <i class="ph ph-check-circle"></i> متزامن
+            </div>
+            <span class="w-8 h-8 flex justify-center items-center rounded-full bg-accentPurple text-white font-bold text-sm">ح</span>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto space-y-10">
+
+        <!-- Welcome Section -->
+        <section class="space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <p class="text-textMuted text-sm mb-1">جامعة الأقصى - بوابة المودل الآلية</p>
+                    <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-l from-purple-400 to-indigo-300" id="greeting">مرحباً، حسام</h1>
+                    <p class="text-gray-400 mt-2 text-sm">يتم الآن مزامنة مهامك تلقائياً من خوادم الجامعة...</p>
+                </div>
+                <button onclick="fetchEvents()" class="flex items-center gap-2 px-4 py-2 bg-cardBorder hover:bg-gray-700 text-sm rounded-lg transition-colors border border-gray-700">
+                    <i class="ph ph-arrows-clockwise text-lg" id="refresh-icon"></i>
+                    تحديث البيانات
+                </button>
+            </div>
+
+            <!-- Dynamic Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-cardBg border border-cardBorder rounded-2xl p-5 flex justify-between items-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 bg-blue-500 h-full"></div>
+                    <div>
+                        <p class="text-gray-400 text-sm">المساقات المسجلة</p>
+                        <p class="text-3xl font-bold mt-1 text-blue-400" id="stat-courses">0</p>
+                    </div>
+                    <i class="ph ph-books text-4xl text-gray-700"></i>
+                </div>
+                <div class="bg-cardBg border border-cardBorder rounded-2xl p-5 flex justify-between items-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 bg-red-500 h-full"></div>
+                    <div>
+                        <p class="text-gray-400 text-sm">التكليفات والمهام</p>
+                        <p class="text-3xl font-bold mt-1 text-red-400" id="stat-total">0</p>
+                    </div>
+                    <i class="ph ph-clock text-4xl text-gray-700"></i>
+                </div>
+                <div class="bg-cardBg border border-cardBorder rounded-2xl p-5 flex justify-between items-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 bg-purple-500 h-full"></div>
+                    <div>
+                        <p class="text-gray-400 text-sm">امتحانات / كويزات</p>
+                        <p class="text-3xl font-bold mt-1" id="stat-exams">0</p>
+                    </div>
+                    <i class="ph ph-exam text-4xl text-gray-700"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Exams Section -->
+        <section>
+            <div class="flex items-center gap-3 mb-4">
+                <h2 class="text-2xl font-bold">الامتحانات والكويزات</h2>
+                <span id="exams-badge" class="bg-purple-900/40 text-purple-400 text-xs px-2 py-1 rounded border border-purple-800">0</span>
+            </div>
+            <div id="exams-list" class="space-y-4">
+                <!-- Skeleton Loader -->
+                <div class="skeleton bg-cardBg border border-cardBorder rounded-2xl p-5 h-32"></div>
+            </div>
+        </section>
+
+        <!-- Deadlines Section -->
+        <section>
+            <div class="flex items-center gap-3 mb-4">
+                <h2 class="text-2xl font-bold">المواعيد النهائية (التكليفات)</h2>
+                <span id="deadlines-badge" class="bg-red-900/40 text-red-400 text-xs px-2 py-1 rounded border border-red-800">0</span>
+            </div>
+            <div id="deadlines-list" class="space-y-4">
+                <!-- Skeleton Loader -->
+                <div class="skeleton bg-cardBg border border-cardBorder rounded-2xl p-5 h-32"></div>
+            </div>
+        </section>
+
+        <!-- Lectures & Course Materials Section -->
+        <section>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-2xl font-bold">محاضرات ومواد المساقات</h2>
+                    <span id="lectures-badge" class="bg-blue-900/40 text-blue-400 text-xs px-2 py-1 rounded border border-blue-800">جاري التحميل</span>
+                </div>
+            </div>
+            <div id="courses-list" class="space-y-3">
+                <!-- Skeleton Loader -->
+                <div class="skeleton bg-cardBg border border-cardBorder rounded-2xl p-5 h-24"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Moodle Export URL details provided by the user
+        const moodleURL = "https://moodle.alaqsa.edu.ps/calendar/export_execute.php?userid=98170&authtoken=424e45628e2332692e02432f61a91720bfae7424&preset_what=all&preset_time=recentupcoming";
+        
+        // بيانات المساقات التي تم استخراجها وتحليلها من المودل (مؤتمتة يدوياً)
+        const courseMaterials = [
+            { title: "Lecture 4 Tooltip_Font_Border_Action_Toggle&Radio Button", course: "برمجة مرئية", type: "عملي", color: "green", section: "الأسبوع الحالي (24 - 30 أكتوبر)" },
+            { title: "Lecture 3 Text_Group_Image _ImageView_Check Box", course: "برمجة مرئية", type: "عملي", color: "green", section: "الأسبوع الحالي (24 - 30 أكتوبر)" },
+            { title: "Lecture 2 Ui & Pane JavaFx", course: "برمجة مرئية", type: "نظري", color: "blue", section: "أسابيع سابقة" },
+            { title: "Lecture 1 part 2 introduction to JavaFx", course: "برمجة مرئية", type: "نظري", color: "blue", section: "أسابيع سابقة" },
+            { title: "Lecture 1 part 1 OOP Refresh", course: "برمجة مرئية", type: "نظري", color: "blue", section: "أسابيع سابقة" },
+            { title: "OOP Refresh PDF", course: "برمجة مرئية", type: "ملف", color: "purple", section: "أسابيع سابقة" },
+            { title: "Introduction-1 (شباتر النظري)", course: "برمجة مرئية", type: "ملف", color: "purple", section: "شباتر النظري" },
+            { title: "3-LayoutPanes (شباتر النظري)", course: "برمجة مرئية", type: "ملف", color: "purple", section: "شباتر النظري" },
+            { title: "4-UI Controls (شباتر النظري)", course: "برمجة مرئية", type: "ملف", color: "purple", section: "شباتر النظري" },
+            { title: "توصيف المساق Syllabus_Visual programming", course: "برمجة مرئية", type: "ملف", color: "purple", section: "القسم العام" },
+            { title: "كتاب المساق Introduction to Java Programming", course: "برمجة مرئية", type: "كتاب", color: "orange", section: "القسم العام" }
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initDate();
+            fetchEvents();
+            renderCourseMaterials(); // توليد قائمة المحاضرات
+            
+            // Update countdowns every minute
+            setInterval(updateCountdowns, 60000);
+        });
+
+        function renderCourseMaterials() {
+            const container = document.getElementById('courses-list');
+            container.innerHTML = '';
+            
+            let currentSection = '';
+
+            courseMaterials.forEach((material) => {
+                // إضافة عنوان القسم إذا تغير
+                if (material.section !== currentSection) {
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="mt-6 mb-2 flex items-center gap-2">
+                            <h4 class="text-sm font-bold text-gray-400">${material.section}</h4>
+                            <div class="h-px bg-gray-800 flex-1"></div>
+                        </div>
+                    `);
+                    currentSection = material.section;
+                }
+
+                // تحديد أيقونة ونمط بناءً على النوع
+                let icon = 'ph-file';
+                if (material.type === 'عملي' || material.type === 'نظري') icon = 'ph-video-camera';
+                else if (material.type === 'ملف') icon = 'ph-file-pdf';
+                else if (material.type === 'كتاب') icon = 'ph-book';
+
+                const card = `
+                    <div class="bg-cardBg border border-cardBorder rounded-xl p-4 flex flex-row justify-between items-center gap-4 group hover:border-gray-600 transition-colors">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-${material.color}-900/30 text-${material.color}-400 text-[10px] px-2 py-0.5 rounded border border-${material.color}-800/50">
+                                    ${material.type}
+                                </span>
+                                <span class="text-xs text-textMuted flex items-center gap-1">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-gray-500"></div> ${material.course}
+                                </span>
+                            </div>
+                            <h3 class="text-sm md:text-base font-semibold text-gray-200" dir="auto">
+                                ${material.title}
+                            </h3>
+                        </div>
+                        <button onclick="this.innerHTML='<i class=\\'ph ph-check-square text-green-400\\'></i>'; this.classList.add('border-green-800', 'bg-green-900/20'); this.disabled=true;" 
+                            class="px-3 py-1.5 bg-transparent hover:bg-gray-800 text-gray-400 text-xs rounded-lg flex items-center gap-2 transition-colors border border-gray-700 min-w-max">
+                            <i class="ph ph-check"></i> اطلعت عليه
+                        </button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+
+            document.getElementById('lectures-badge').innerText = courseMaterials.length + ' مواد تعليمية';
+            
+            // تحديث الإحصائيات العلوية لإضافة المساق
+            const coursesStat = document.getElementById('stat-courses');
+            if (coursesStat.innerText === '0' || coursesStat.innerText === 'نشط') {
+                coursesStat.innerText = '1 مساق مضاف';
+            }
+        }
+
+        function initDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('ar-EG', options);
+            document.getElementById('current-date-display').innerText = today;
+
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'صباح الخير' : 'مساء الخير';
+            document.getElementById('greeting').innerText = `${greeting}، حسام`;
+        }
+
+        async function fetchEvents() {
+            const refreshIcon = document.getElementById('refresh-icon');
+            refreshIcon.classList.add('animate-spin');
+            document.getElementById('sync-status').classList.add('hidden');
+
+            let icsData = null;
+
+            try {
+                // النظام الجديد: جلب البيانات من الملف الذي يقوم GitHub بتحديثه كل 3 ساعات
+                const response = await fetch('./moodle_data.ics', { 
+                    cache: "no-store",
+                    headers: {
+                        'Accept': 'text/calendar, text/plain, */*'
+                    }
+                });
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    if (text && text.includes("BEGIN:VCALENDAR")) {
+                        icsData = text;
+                    } else {
+                        throw new Error("الملف موجود ولكنه فارغ أو غير صالح.");
+                    }
+                } else {
+                     throw new Error("لم يتم العثور على ملف المزامنة التلقائي (moodle_data.ics).");
+                }
+
+                const events = parseICS(icsData);
+                
+                renderEvents(events);
+                updateCountdowns(); // Initial countdown calculation
+
+                document.getElementById('sync-status').innerHTML = '<i class="ph ph-check-circle"></i> متزامن';
+                document.getElementById('sync-status').classList.remove('text-yellow-400', 'hidden');
+                document.getElementById('sync-status').classList.add('text-green-400');
+                
+                // إزالة رسالة الخطأ إن وجدت
+                const errorBanner = document.getElementById('manual-upload-banner');
+                if(errorBanner) errorBanner.remove();
+
+            } catch (error) {
+                console.info("ملاحظة: " + error.message + " تم تفعيل وضع الرفع المحلي.");
+                handleFetchError(error.message);
+            } finally {
+                refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
+        function handleFetchError(errorMsg) {
+            const examsContainer = document.getElementById('exams-list');
+            const deadlinesContainer = document.getElementById('deadlines-list');
+            
+            // تفريغ قوائم التحميل
+            examsContainer.innerHTML = '';
+            deadlinesContainer.innerHTML = '';
+            
+            // تصفير العدادات
+            document.getElementById('stat-total').innerText = '0';
+            document.getElementById('stat-exams').innerText = '0';
+            document.getElementById('exams-badge').innerText = '0 قادم';
+            document.getElementById('deadlines-badge').innerText = '0 قادم';
+            
+            document.getElementById('sync-status').innerHTML = '<i class="ph ph-warning-circle"></i> يتطلب إجراء';
+            document.getElementById('sync-status').classList.remove('text-green-400', 'hidden');
+            document.getElementById('sync-status').classList.add('text-yellow-400');
+            
+            // إضافة بانر الرفع اليدوي (الحل الجذري)
+            if (!document.getElementById('manual-upload-banner')) {
+                const mainSection = document.querySelector('main');
+                mainSection.insertAdjacentHTML('afterbegin', `
+                    <div id="manual-upload-banner" class="bg-cardBg border-2 border-dashed border-purple-600/50 rounded-2xl p-6 mb-2 flex flex-col md:flex-row items-center gap-6 justify-between animate-pulse-slow">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                                <i class="ph ph-shield-warning text-yellow-400"></i>
+                                حماية الجامعة تمنع التحديث التلقائي
+                            </h3>
+                            <p class="text-gray-400 text-sm">
+                                لا تقلق! قم بتحميل ملف التقويم مباشرة من المودل، ثم ارفعه هنا لتحديث اللوحة فوراً وبأمان تام.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 min-w-max">
+                            <a href="${moodleURL}" target="_blank" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-sm rounded-lg border border-gray-600 transition flex items-center gap-2 justify-center">
+                                <i class="ph ph-download-simple"></i> 1. تحميل ملف .ics
+                            </a>
+                            <label class="px-4 py-2 bg-accentPurple hover:bg-purple-600 text-white text-sm rounded-lg cursor-pointer transition flex items-center gap-2 justify-center shadow-lg shadow-purple-900/20">
+                                <i class="ph ph-upload-simple"></i> 2. رفع الملف هنا
+                                <input type="file" accept=".ics" class="hidden" onchange="handleFileUpload(event)">
+                            </label>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        // دالة التعامل مع الملف عند رفعه يدوياً
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                try {
+                    // التحقق من صحة الملف
+                    if (!content.includes("BEGIN:VCALENDAR")) {
+                        throw new Error("الملف غير صالح.");
+                    }
+
+                    const events = parseICS(content);
+                    renderEvents(events);
+                    updateCountdowns();
+                    
+                    // تحديث الحالة
+                    document.getElementById('sync-status').innerHTML = '<i class="ph ph-check-circle"></i> متزامن (محلياً)';
+                    document.getElementById('sync-status').classList.remove('text-yellow-400', 'hidden');
+                    document.getElementById('sync-status').classList.add('text-green-400');
+                    
+                    // إزالة بانر التحذير
+                    const errorBanner = document.getElementById('manual-upload-banner');
+                    if(errorBanner) errorBanner.remove();
+                    
+                } catch (error) {
+                    alert("عذراً، يبدو أن الملف الذي قمت برفعه ليس ملف تقويم مودل صحيح.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ICS File Parser
+        function parseICS(icsString) {
+            const lines = icsString.split(/\r\n|\n|\r/);
+            const events = [];
+            let currentEvent = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                
+                // Handle folded lines in ICS
+                while (i + 1 < lines.length && (lines[i+1].startsWith(' ') || lines[i+1].startsWith('\t'))) {
+                    i++;
+                    line += lines[i].substring(1);
+                }
+
+                if (line === 'BEGIN:VEVENT') {
+                    currentEvent = {};
+                } else if (line === 'END:VEVENT') {
+                    if (currentEvent && currentEvent.dtstart) {
+                        events.push(currentEvent);
+                    }
+                    currentEvent = null;
+                } else if (currentEvent) {
+                    if (line.startsWith('SUMMARY:')) {
+                        currentEvent.summary = line.substring(8).replace(/\\,/g, ',').replace(/\\;/g, ';');
+                    }
+                    else if (line.startsWith('DESCRIPTION:')) {
+                        currentEvent.description = line.substring(12).replace(/\\n/g, '<br>');
+                    }
+                    else if (line.match(/^DTSTART/)) {
+                        const match = line.match(/:(.+)$/);
+                        if (match) currentEvent.dtstart = parseICSDate(match[1]);
+                    }
+                    else if (line.match(/^DTEND/)) {
+                        const match = line.match(/:(.+)$/);
+                        if (match) currentEvent.dtend = parseICSDate(match[1]);
+                    }
+                }
+            }
+
+            // Filter out past events
+            const now = new Date();
+            return events
+                .filter(ev => ev.dtstart > now)
+                .sort((a, b) => a.dtstart - b.dtstart);
+        }
+
+        function parseICSDate(icsDateStr) {
+            // Format: YYYYMMDDTHHMMSSZ or YYYYMMDDTHHMMSS
+            const match = icsDateStr.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)/);
+            if (!match) return new Date(); // Fallback
+
+            const [_, year, month, day, hour, min, sec, z] = match;
+            if (z === 'Z') {
+                return new Date(Date.UTC(year, month - 1, day, hour, min, sec));
+            } else {
+                return new Date(year, month - 1, day, hour, min, sec);
+            }
+        }
+
+        function renderEvents(events) {
+            const examsContainer = document.getElementById('exams-list');
+            const deadlinesContainer = document.getElementById('deadlines-list');
+            
+            examsContainer.innerHTML = '';
+            deadlinesContainer.innerHTML = '';
+
+            let examsCount = 0;
+            let deadlinesCount = 0;
+            const uniqueCourses = new Set();
+
+            events.forEach(ev => {
+                const title = ev.summary.toLowerCase();
+                const isExam = title.includes('quiz') || title.includes('exam') || title.includes('امتحان') || title.includes('اختبار');
+                
+                // محاولة استخراج اسم المساق من العنوان إذا كان بين أقواس []
+                const courseMatch = ev.summary.match(/\[(.*?)\]/);
+                if (courseMatch) uniqueCourses.add(courseMatch[1]);
+                
+                const cardHTML = createCardHTML(ev, isExam);
+
+                if (isExam) {
+                    examsContainer.insertAdjacentHTML('beforeend', cardHTML);
+                    examsCount++;
+                } else {
+                    deadlinesContainer.insertAdjacentHTML('beforeend', cardHTML);
+                    deadlinesCount++;
+                }
+            });
+
+            // Update stats & badges
+            document.getElementById('stat-total').innerText = events.length;
+            document.getElementById('stat-exams').innerText = examsCount;
+            // افتراضياً إظهار عدد المساقات المستخرجة أو رقم تقريبي إذا لم تكن منسقة
+            document.getElementById('stat-courses').innerText = uniqueCourses.size > 0 ? uniqueCourses.size : (events.length > 0 ? 'نشط' : '0'); 
+            
+            document.getElementById('exams-badge').innerText = examsCount + ' قادم';
+            document.getElementById('deadlines-badge').innerText = deadlinesCount + ' قادم';
+
+            if (examsCount === 0) examsContainer.innerHTML = '<p class="text-gray-500 text-sm p-4">لا توجد امتحانات قريبة.</p>';
+            if (deadlinesCount === 0) deadlinesContainer.innerHTML = '<p class="text-gray-500 text-sm p-4">لا توجد تكليفات قريبة. استمتع بوقتك!</p>';
+        }
+
+        function createCardHTML(event, isExam) {
+            const targetDateIso = event.dtstart.toISOString();
+            const dateStr = event.dtstart.toLocaleDateString('ar-EG', { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+            
+            const accentColor = isExam ? 'purple' : 'red';
+            const icon = isExam ? 'ph-exam' : 'ph-file-text';
+            
+            return `
+                <div class="bg-cardBg border border-cardBorder rounded-2xl p-5 relative overflow-hidden group hover:border-gray-600 transition-colors">
+                    <div class="absolute inset-0 bg-gradient-to-r from-${accentColor}-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                        <div class="space-y-2 w-full md:w-auto flex-1">
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="text-${accentColor}-400 font-bold flex items-center gap-1">
+                                    <i class="ph ${icon} text-lg"></i> ${isExam ? 'امتحان / كويز' : 'تكليف'}
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-semibold" dir="auto">${event.summary}</h3>
+                            <p class="text-sm text-textMuted" dir="auto">الاستحقاق: ${dateStr}</p>
+                            
+                            <button onclick="this.innerHTML='<i class=\\'ph ph-check text-green-400\\'></i> تم الإنجاز'; this.classList.add('border-green-800', 'text-green-400'); this.disabled=true;" 
+                                class="mt-4 px-4 py-1.5 bg-transparent hover:bg-gray-800 text-gray-300 text-xs rounded-lg flex items-center gap-2 transition-colors border border-gray-700 w-max">
+                                <i class="ph ph-check-circle"></i> تحديد كمكتمل
+                            </button>
+                        </div>
+                        
+                        <!-- Dynamic Countdown Timer -->
+                        <div class="flex gap-3 text-center countdown" data-target="${targetDateIso}">
+                            <div class="bg-cardBorder border border-gray-700 rounded-lg p-2 min-w-[60px]">
+                                <div class="text-2xl font-bold text-gray-200 days">--</div>
+                                <div class="text-xs text-gray-400">يوم</div>
+                            </div>
+                            <div class="bg-cardBorder border border-gray-700 rounded-lg p-2 min-w-[60px]">
+                                <div class="text-2xl font-bold text-gray-200 hours">--</div>
+                                <div class="text-xs text-gray-400">ساعة</div>
+                            </div>
+                            <div class="bg-cardBorder border border-gray-700 rounded-lg p-2 min-w-[60px]">
+                                <div class="text-2xl font-bold text-gray-200 minutes">--</div>
+                                <div class="text-xs text-gray-400">دقيقة</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateCountdowns() {
+            const elements = document.querySelectorAll('.countdown');
+            const now = new Date().getTime();
+
+            elements.forEach(el => {
+                const targetDate = new Date(el.dataset.target).getTime();
+                const distance = targetDate - now;
+
+                const daysEl = el.querySelector('.days');
+                const hoursEl = el.querySelector('.hours');
+                const minsEl = el.querySelector('.minutes');
+
+                if (distance < 0) {
+                    daysEl.innerText = "00";
+                    hoursEl.innerText = "00";
+                    minsEl.innerText = "00";
+                    daysEl.classList.remove('text-red-400', 'text-gray-200');
+                    daysEl.classList.add('text-gray-600');
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+                daysEl.innerText = String(days).padStart(2, '0');
+                hoursEl.innerText = String(hours).padStart(2, '0');
+                minsEl.innerText = String(minutes).padStart(2, '0');
+                
+                // Color critical deadlines (less than 3 days)
+                if(days < 3) {
+                    daysEl.classList.add('text-red-400');
+                    daysEl.classList.remove('text-gray-200');
+                } else {
+                    daysEl.classList.remove('text-red-400');
+                    daysEl.classList.add('text-gray-200');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
