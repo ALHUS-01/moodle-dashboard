@@ -1,0 +1,150 @@
+BEGIN:VCALENDAR
+METHOD:PUBLISH
+PRODID:-//Moodle Pty Ltd//NONSGML Moodle Version 2025100600.04//EN
+VERSION:2.0
+BEGIN:VEVENT
+UID:35439@moodle.alaqsa.edu.ps
+SUMMARY:Quiz 01 - Arrays and Bag يُفتح
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261027T091705Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261027T090000Z
+DTEND:20261027T090000Z
+CATEGORIES:تراكيب البيانات وتحليل الخوارزميات_176
+END:VEVENT
+BEGIN:VEVENT
+UID:35440@moodle.alaqsa.edu.ps
+SUMMARY:Quiz 01 - Arrays and Bag يُغلق
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261027T091705Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261027T101000Z
+DTEND:20261027T101000Z
+CATEGORIES:تراكيب البيانات وتحليل الخوارزميات_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33671@moodle.alaqsa.edu.ps
+SUMMARY:Graded Quiz : Database Performance Tuning and Query Optimization يُ
+	فتح
+	
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261018T111119Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261030T235300Z
+DTEND:20261030T235300Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:35507@moodle.alaqsa.edu.ps
+SUMMARY:Assignment 1: Install Ubuntu and Explore Commands مستحق
+DESCRIPTION:SUBMISSION:\n    • Submit a single PDF FILE to Moodle named: st
+	udentnum-studentname-Lab2.pdf.(docx\, doc file are NOT accepted)\n    • Upl
+	oad this single PDF file to GOOGLE DRIVE and SHARE the link with “ANYONE WI
+	TH THE LINK” can view.\n\n-------------------------\n\nACADEMIC INTEGRITY D
+	ISCLAIMER\n\nWARNING: All work submitted for this assignment must be your o
+	wn individual effort. The goal of these labs is for you to learn and practi
+	ce these skills personally.\n\n	*\nPLAGIARISM AND CHEATING: Submitting work
+	 that is copied from another student\, from the internet\, or from any othe
+	r source will be considered a serious academic violation. Any two submissio
+	ns that are found to be substantially similar will be investigated.\n\n	*\n
+	USE OF AI-GENERATED CONTENT: Using AI tools (such as ChatGPT\, Gemini\, etc
+	.) to generate answers\, analysis paragraphs\, or any other part of your su
+	bmission is strictly prohibited and is considered a form of cheating.\n\nAn
+	y violation of these rules will result in an immediate grade of ZERO (0) fo
+	r the assignment and may lead to further disciplinary action by the faculty
+	.\n
+	
+CLASS:PUBLIC
+LAST-MODIFIED:20261025T103717Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261102T215900Z
+DTEND:20261102T215900Z
+CATEGORIES:نظم التشغيل للأنظمة الذكية_176
+END:VEVENT
+BEGIN:VEVENT
+UID:35436@moodle.alaqsa.edu.ps
+SUMMARY:Assignment 01: Student Grades Management System مستحق
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261029T134724Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261103T210000Z
+DTEND:20261103T210000Z
+CATEGORIES:تراكيب البيانات وتحليل الخوارزميات_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33673@moodle.alaqsa.edu.ps
+SUMMARY:Quiz : Distributed Database Management Systems يُفتح
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261018T111251Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261113T211500Z
+DTEND:20261113T211500Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33675@moodle.alaqsa.edu.ps
+SUMMARY:Midterm Exam يُفتح
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261018T111337Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261120T054800Z
+DTEND:20261120T054800Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33679@moodle.alaqsa.edu.ps
+SUMMARY:Graded Quiz: Big Data and NoSQL يُفتح
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261005T065334Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261202T211502Z
+DTEND:20261202T211502Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33668@moodle.alaqsa.edu.ps
+SUMMARY:Short Essay يُغلق
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261018T111002Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261210T091700Z
+DTEND:20261210T091700Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33677@moodle.alaqsa.edu.ps
+SUMMARY:Graded Quiz : Business Intelligence and Data Warehouses يُفتح
+DESCRIPTION:
+CLASS:PUBLIC
+LAST-MODIFIED:20261005T065334Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261213T235302Z
+DTEND:20261213T235302Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+BEGIN:VEVENT
+UID:33663@moodle.alaqsa.edu.ps
+SUMMARY:Assignment 2: Case Study مستحق
+DESCRIPTION:You manage a database system where users report slow query perf
+	ormance when retrieving data. Based on the knowledge from Chapter 11\, iden
+	tify at least FIVE COMMON QUERY PROCESSING BOTTLENECKS (e.g.\, CPU\, RAM\, 
+	disk I/O\, network latency\, inefficient SQL code). For each bottleneck:\n\
+	n	* Describe how it affects query performance.\n	* Propose TWO SOLUTIONS or
+	 strategies to mitigate the impact of each bottleneck.\n\n
+	
+CLASS:PUBLIC
+LAST-MODIFIED:20261018T110836Z
+DTSTAMP:20261029T171151Z
+DTSTART:20261215T102300Z
+DTEND:20261215T102300Z
+CATEGORIES:أنظمة قواعد البيانات المتقدمة_176
+END:VEVENT
+END:VCALENDAR
