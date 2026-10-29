@@ -1,48 +1,80 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة المهام - جامعة الأقصى</title>
+    <title>Al-Aqsa University | Task Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #111827; }
-        .glass { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(55, 65, 81, 0.5); }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="text-gray-100 p-4 md:p-8 max-w-4xl mx-auto min-h-screen flex flex-col">
+<body class="text-gray-100 p-4 md:p-8 max-w-6xl mx-auto min-h-screen flex flex-col">
     
     <!-- Header -->
-    <header class="mb-8 flex justify-between items-center">
+    <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
         <div>
-            <h1 class="text-3xl font-bold text-blue-400">مساء الخير، حسام</h1>
-            <p class="text-gray-400 text-sm mt-1">إليك المواعيد النهائية لتكليفاتك وامتحاناتك</p>
+            <h1 class="text-3xl font-bold text-blue-400 tracking-tight">Welcome back, Husam</h1>
+            <p class="text-slate-400 text-sm mt-1">Here is the automated overview of your deadlines and exams.</p>
         </div>
-        <div class="text-left">
-            <span class="bg-gray-800 text-xs px-2 py-1 rounded border border-gray-700">تحديث تلقائي مفعل 🟢</span>
+        <div class="flex items-center gap-3">
+            <span class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Auto-Sync Active
+            </span>
         </div>
     </header>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-2 gap-4 mb-8">
-        <div class="glass p-4 rounded-xl text-center">
-            <h3 class="text-gray-400 text-sm">التكليفات المفتوحة</h3>
-            <p class="text-3xl font-bold text-red-400 mt-1" id="task-count">0</p>
+    <!-- Overview Stats -->
+    <div class="grid grid-cols-2 gap-4 md:gap-6 mb-8">
+        <div class="glass p-5 rounded-2xl flex items-center justify-between">
+            <div>
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Pending Assignments</h3>
+                <p class="text-3xl font-bold text-blue-400 mt-2" id="task-count">0</p>
+            </div>
+            <div class="text-4xl opacity-20">📝</div>
         </div>
-        <div class="glass p-4 rounded-xl text-center">
-            <h3 class="text-gray-400 text-sm">الامتحانات القادمة</h3>
-            <p class="text-3xl font-bold text-green-400 mt-1" id="exam-count">0</p>
+        <div class="glass p-5 rounded-2xl flex items-center justify-between">
+            <div>
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Upcoming Exams</h3>
+                <p class="text-3xl font-bold text-emerald-400 mt-2" id="exam-count">0</p>
+            </div>
+            <div class="text-4xl opacity-20">⚡</div>
         </div>
     </div>
 
-    <!-- Active Deadlines -->
-    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">المواعيد النهائية (تحديث حي من المودل)</h2>
-    <div id="tasks-container" class="space-y-4 mb-10 flex-1">
-        <p class="text-gray-400 text-sm">جاري سحب البيانات من الخادم السحابي...</p>
+    <!-- Main Content: Split View -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+        
+        <!-- Assignments Column -->
+        <section class="flex flex-col">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-xl">📝</span>
+                <h2 class="text-xl font-bold text-slate-200">Assignments & Tasks</h2>
+            </div>
+            <div id="assignments-container" class="space-y-4 flex-1">
+                <p class="text-slate-400 text-sm">Fetching data from cloud server...</p>
+            </div>
+        </section>
+
+        <!-- Quizzes Column -->
+        <section class="flex flex-col">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-xl">⚡</span>
+                <h2 class="text-xl font-bold text-slate-200">Quizzes & Exams</h2>
+            </div>
+            <div id="quizzes-container" class="space-y-4 flex-1">
+                <p class="text-slate-400 text-sm">Fetching data from cloud server...</p>
+            </div>
+        </section>
+
     </div>
 
-    <!-- Script for ICS Parsing and Countdown -->
+    <!-- Script for ICS Parsing and UI Separation -->
     <script>
         async function fetchICS() {
             try {
@@ -51,7 +83,9 @@
                 const data = await response.text();
                 parseICS(data);
             } catch (err) {
-                document.getElementById('tasks-container').innerHTML = '<p class="text-yellow-400 text-sm">بانتظار وصول مهام المودل من الأتمتة السحابية...</p>';
+                const errorHtml = '<p class="text-amber-400 text-sm glass p-4 rounded-lg">Waiting for automated sync to complete...</p>';
+                document.getElementById('assignments-container').innerHTML = errorHtml;
+                document.getElementById('quizzes-container').innerHTML = errorHtml;
             }
         }
 
@@ -85,45 +119,66 @@
         }
 
         function renderEvents(events) {
-            const container = document.getElementById('tasks-container');
-            container.innerHTML = '';
+            const assignContainer = document.getElementById('assignments-container');
+            const quizContainer = document.getElementById('quizzes-container');
+            assignContainer.innerHTML = '';
+            quizContainer.innerHTML = '';
             
             const futureEvents = events.filter(e => e.start > new Date()).sort((a,b) => a.start - b.start);
-            let tasks = 0, exams = 0;
+            let tasksCount = 0, examsCount = 0;
 
-            if(futureEvents.length === 0) {
-                container.innerHTML = '<div class="glass p-6 rounded-xl text-center"><p class="text-green-400 text-lg font-bold">لا يوجد مهام أو امتحانات قادمة!</p><p class="text-gray-400 text-sm mt-2">استمتع بوقتك، النظام يراقب المودل نيابة عنك وسيبلغك بأي جديد.</p></div>';
-                return;
-            }
+            const emptyStateHtml = (message) => `
+                <div class="glass p-6 rounded-xl text-center h-full flex flex-col justify-center border-dashed border-slate-600">
+                    <span class="text-3xl mb-2 opacity-50">✨</span>
+                    <p class="text-slate-300 font-semibold">${message}</p>
+                    <p class="text-slate-500 text-xs mt-1">System is actively monitoring.</p>
+                </div>
+            `;
 
             futureEvents.forEach(e => {
-                const isExam = e.summary.toLowerCase().includes('quiz') || e.summary.toLowerCase().includes('exam') || e.summary.includes('امتحان') || e.summary.includes('اختبار');
-                if(isExam) exams++; else tasks++;
-
+                // الكود لا يزال يبحث عن الكلمات العربية في الملف حتى لو الواجهة انجليزية لضمان عدم ضياع شيء
+                const summaryLower = e.summary.toLowerCase();
+                const isExam = summaryLower.includes('quiz') || summaryLower.includes('exam') || summaryLower.includes('midterm') || e.summary.includes('امتحان') || e.summary.includes('اختبار');
+                
                 const now = new Date();
                 const diff = e.start - now;
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
 
-                let timeColor = days <= 2 ? 'text-red-400' : 'text-gray-300';
-                let typeColor = isExam ? 'border-green-600' : 'border-blue-600';
+                const isUrgent = days <= 2;
+                const timeBadgeColor = isUrgent ? 'bg-red-500/20 text-red-400 border-red-500/30' : 'bg-slate-800 text-slate-300 border-slate-700';
+                const cardAccent = isExam ? 'border-l-emerald-500' : 'border-l-blue-500';
 
-                const div = document.createElement('div');
-                div.className = `glass p-4 rounded-xl border-r-4 ${typeColor} flex justify-between items-center`;
-                div.innerHTML = `
-                    <div class="pr-2">
-                        <p class="font-bold text-sm text-gray-100">${e.summary}</p>
-                        <p class="text-xs text-gray-400 mt-1">${e.start.toLocaleString('ar-EG')}</p>
-                    </div>
-                    <div class="text-center bg-gray-800 px-3 py-1 rounded min-w-[80px]">
-                        <span class="block text-lg font-bold ${timeColor}">${days}d ${hours}h</span>
+                const formattedDate = e.start.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                const cardHtml = `
+                    <div class="glass p-4 rounded-xl border-l-4 ${cardAccent} hover:bg-slate-800/50 transition-colors flex justify-between items-center gap-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-sm text-slate-100 truncate" title="${e.summary}">${e.summary}</p>
+                            <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                                📅 ${formattedDate}
+                            </p>
+                        </div>
+                        <div class="text-center px-3 py-1.5 rounded-lg border ${timeBadgeColor} min-w-[80px] shrink-0">
+                            <span class="block text-sm font-bold">${days}d ${hours}h</span>
+                        </div>
                     </div>
                 `;
-                container.appendChild(div);
+
+                if(isExam) {
+                    quizContainer.insertAdjacentHTML('beforeend', cardHtml);
+                    examsCount++;
+                } else {
+                    assignContainer.insertAdjacentHTML('beforeend', cardHtml);
+                    tasksCount++;
+                }
             });
 
-            document.getElementById('task-count').innerText = tasks;
-            document.getElementById('exam-count').innerText = exams;
+            if(tasksCount === 0) assignContainer.innerHTML = emptyStateHtml("No pending assignments");
+            if(examsCount === 0) quizContainer.innerHTML = emptyStateHtml("No upcoming quizzes");
+
+            document.getElementById('task-count').innerText = tasksCount;
+            document.getElementById('exam-count').innerText = examsCount;
         }
 
         fetchICS();
