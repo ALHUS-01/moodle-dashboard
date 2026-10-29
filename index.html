@@ -9,17 +9,15 @@
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #111827; }
         .glass { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(55, 65, 81, 0.5); }
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
     </style>
 </head>
-<body class="text-gray-100 p-4 md:p-8 max-w-4xl mx-auto min-h-screen">
+<body class="text-gray-100 p-4 md:p-8 max-w-4xl mx-auto min-h-screen flex flex-col">
     
     <!-- Header -->
     <header class="mb-8 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-blue-400">مساء الخير، حسام</h1>
-            <p class="text-gray-400 text-sm mt-1">إليك ملخص مهامك ومساقاتك لهذا الفصل</p>
+            <p class="text-gray-400 text-sm mt-1">إليك المواعيد النهائية لتكليفاتك وامتحاناتك</p>
         </div>
         <div class="text-left">
             <span class="bg-gray-800 text-xs px-2 py-1 rounded border border-gray-700">تحديث تلقائي مفعل 🟢</span>
@@ -27,144 +25,21 @@
     </header>
 
     <!-- Stats -->
-    <div class="grid grid-cols-3 gap-4 mb-8">
-        <div class="glass p-4 rounded-xl text-center">
-            <h3 class="text-gray-400 text-sm">المساقات المسجلة</h3>
-            <p class="text-2xl font-bold text-white mt-1">7</p>
-        </div>
+    <div class="grid grid-cols-2 gap-4 mb-8">
         <div class="glass p-4 rounded-xl text-center">
             <h3 class="text-gray-400 text-sm">التكليفات المفتوحة</h3>
-            <p class="text-2xl font-bold text-red-400 mt-1" id="task-count">0</p>
+            <p class="text-3xl font-bold text-red-400 mt-1" id="task-count">0</p>
         </div>
         <div class="glass p-4 rounded-xl text-center">
-            <h3 class="text-gray-400 text-sm">الامتحانات</h3>
-            <p class="text-2xl font-bold text-green-400 mt-1" id="exam-count">0</p>
+            <h3 class="text-gray-400 text-sm">الامتحانات القادمة</h3>
+            <p class="text-3xl font-bold text-green-400 mt-1" id="exam-count">0</p>
         </div>
     </div>
 
     <!-- Active Deadlines -->
-    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">المواعيد النهائية والامتحانات (تحديث حي)</h2>
-    <div id="tasks-container" class="space-y-4 mb-10">
+    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">المواعيد النهائية (تحديث حي من المودل)</h2>
+    <div id="tasks-container" class="space-y-4 mb-10 flex-1">
         <p class="text-gray-400 text-sm">جاري سحب البيانات من الخادم السحابي...</p>
-    </div>
-
-    <!-- All Courses Accordions -->
-    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">المساقات الدراسية (المحاضرات والملفات)</h2>
-    <div class="space-y-4">
-        
-        <!-- Course 1: Advanced Databases -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                أنظمة قواعد البيانات المتقدمة (أ.محمد جميل، أ.مها العتيلي)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <!-- أ.محمد جميل -->
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Syllabus</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Advance DB Book</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 10: Transaction Management</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Concurrency Control 1 & 2</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 11: Performance Tuning</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 12: Distributed DBMS</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 13: Business Intelligence</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 14: Big Data and NoSQL</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <!-- أ.مها العتيلي -->
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Oracle Apex Setup</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lab 2 & Lab 3</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 2: Visual Programming -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                برمجة مرئية (أ.محمود عاشور)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Syllabus_Visual programming</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Java FX for Dummies Book</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Javafx-application-lifecycle & Diagrams</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">OOP Refresh</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 2 Ui & Pane JavaFx</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 3 Text_Group_Image</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 4 Tooltip_Font_Border</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 5 FlowPane +BorderPane</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 6 Shapes & Animation</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 3: System Analysis -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                تحليل وتصميم الأنظمة (د.وسام كلاب)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Course Syllabus & Textbook</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 1: Slides & Videos</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 2: Slides & Videos</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 3: Slides & Videos</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 4: Slides & Videos</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Chapter 5 & 6 & 7: Slides & Videos</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">مشروع مساق تحليل وتصميم النظم</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 4: Data Structures -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                تراكيب البيانات وتحليل الخوارزميات (أ.فراس العجلة، د.تامر فطاير)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">الخطة الدراسية وتوصيف المساق</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 1: Introduction to Data Structures</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 2: Arrays</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 3: Bag Implementation Using Arrays</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 4: Singly Linked List</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 6: Singly Circular Linked List</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">مراجعة O.O.P</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 5: Programming 2 -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                لغة برمجة 2 (أ.ابتسام داوود، أ.دالية الحرازين)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Syllabus & Textbook</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Download Python & VS Code</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 1</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">Lecture 2 (Parts 1, 2 & 3)</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 6: Smart Systems OS -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                نظم التشغيل للأنظمة الذكية (أ.حسام موسى، أ.محمد الهمص)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">توصيف المساق ورابط الكتاب</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">الفصل الأول (محاضرات وشروحات)</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">الفصل الثاني (محاضرات وشروحات)</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
-
-        <!-- Course 7: Recreation -->
-        <details class="glass rounded-xl cursor-pointer group">
-            <summary class="p-4 font-bold text-lg text-blue-400 flex justify-between items-center outline-none">
-                الترويح (د.عادل ابو خوصة)
-                <span class="text-gray-500 text-sm group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div class="p-4 border-t border-gray-700 space-y-3 bg-gray-800/50">
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">كتاب الترويح وملخص الكتاب</p><span class="text-xs text-purple-400">ملف/كتاب</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-                <div class="glass p-3 rounded-lg flex justify-between items-center"><div><p class="font-bold text-sm">المحاضرات 1 إلى 6</p><span class="text-xs text-blue-400">محاضرة/رابط</span></div><button onclick="this.classList.toggle('bg-green-600'); this.classList.toggle('text-white'); this.classList.toggle('bg-gray-700')" class="bg-gray-700 text-xs px-3 py-1 rounded transition">اطلعت عليه ✔</button></div>
-            </div>
-        </details>
     </div>
 
     <!-- Script for ICS Parsing and Countdown -->
@@ -217,7 +92,7 @@
             let tasks = 0, exams = 0;
 
             if(futureEvents.length === 0) {
-                container.innerHTML = '<p class="text-green-400 text-sm flex items-center">لا يوجد مهام أو امتحانات قادمة، استمتع بوقتك!</p>';
+                container.innerHTML = '<div class="glass p-6 rounded-xl text-center"><p class="text-green-400 text-lg font-bold">لا يوجد مهام أو امتحانات قادمة!</p><p class="text-gray-400 text-sm mt-2">استمتع بوقتك، النظام يراقب المودل نيابة عنك وسيبلغك بأي جديد.</p></div>';
                 return;
             }
 
@@ -240,7 +115,7 @@
                         <p class="font-bold text-sm text-gray-100">${e.summary}</p>
                         <p class="text-xs text-gray-400 mt-1">${e.start.toLocaleString('ar-EG')}</p>
                     </div>
-                    <div class="text-center bg-gray-800 px-3 py-1 rounded">
+                    <div class="text-center bg-gray-800 px-3 py-1 rounded min-w-[80px]">
                         <span class="block text-lg font-bold ${timeColor}">${days}d ${hours}h</span>
                     </div>
                 `;
