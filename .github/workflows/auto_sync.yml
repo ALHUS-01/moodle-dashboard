@@ -1,0 +1,30 @@
+name: Moodle Auto Sync (Every 3 Hours)
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-dashboard:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Fetch Moodle Data
+      run: python sync_moodle.py
+      
+    - name: Commit and push if changed
+      run: |
+        git config --global user.email "bot@husam-dashboard.com"
+        git config --global user.name "Auto Sync Bot"
+        git add moodle_data.ics
+        git commit -m "Auto-update Moodle tasks" || exit 0
+        git push
