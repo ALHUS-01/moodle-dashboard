@@ -47,6 +47,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add moodle_data.ics sync_status.json
+          git add moodle_data.ics
           git commit -m "Auto-sync Moodle data and health status" || echo "No changes to commit"
           git push
