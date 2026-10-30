@@ -76,12 +76,14 @@
     </div>
 
     <script>
+        // إضافة مولد أرقام عشوائي لمنع المتصفح من تخزين البيانات القديمة
+        const cacheBuster = '?t=' + new Date().getTime();
+
         async function fetchSyncStatus() {
             const badge = document.getElementById('sync-badge');
             try {
-                const response = await fetch('sync_status.json');
+                const response = await fetch('sync_status.json' + cacheBuster);
                 if(!response.ok) {
-                    // الملف لم يتولد بعد لأن الأتمتة لم تعمل للمرة الأولى
                     badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
                     badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span><span>Waiting for first sync...</span>';
                     return;
@@ -110,7 +112,7 @@
 
         async function fetchICS() {
             try {
-                const response = await fetch('moodle_data.ics');
+                const response = await fetch('moodle_data.ics' + cacheBuster);
                 if(!response.ok) throw new Error("No data");
                 const data = await response.text();
                 parseICS(data);
