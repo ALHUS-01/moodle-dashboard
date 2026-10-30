@@ -1,33 +1,52 @@
-name: Moodle Auto Sync (Every 3 Hours)
+name: Moodle Auto Sync
 
 on:
   schedule:
     - cron: '0 */3 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   update-dashboard:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Fetch Moodle Data
-      run: python sync_moodle.py
-      
-    - name: Commit and push if changed
-      run: |
-        git config --global user.email "bot@husam-dashboard.com"
-        git config --global user.name "Auto Sync Bot"
-        git add
-        git commit -m "Auto-update Moodle tasks" || exit 0
-        git push
+      - name: Create and Run Sync Script
+        env:
+          MOODLE_URL: "https://moodle.alaqsa.edu.ps/calendar/export_execute.php?userid=98170&authtoken=424e45628e2332692e02432f61a91720bfae7424&preset_what=all&preset_time=recentupcoming"
+        run: |
+          python -c '
+          import urllib.request, json, datetime, os
+          url = os.environ["MOODLE_URL"]
+          status = {"status": "success", "timestamp": datetime.datetime.utcnow().isoformat() + "Z", "error_msg": ""}
+          try:
+              req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+              res = urllib.request.urlopen(req, timeout=30)
+              if res.getcode() == 200:
+                  with open("moodle_data.ics", "wb") as f:
+                      f.write(res.read())
+              else:
+                  raise Exception(f"HTTP Error: {res.getcode()}")
+          except Exception as e:
+              status["status"] = "error"
+              status["error_msg"] = str(e)
+          
+          with open("sync_status.json", "w", encoding="utf-8") as f:
+              json.dump(status, f)
+          '
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add moodle_data.ics sync_status.json
+          git commit -m "Auto-sync Moodle data and health status" || echo "No changes to commit"
+          git push
