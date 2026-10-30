@@ -23,9 +23,10 @@
             <p class="text-slate-400 text-sm mt-1">Here is the automated overview of your deadlines and exams.</p>
         </div>
         <div class="flex items-center gap-3">
-            <span class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Auto-Sync Active
+            <!-- شارة المراقبة الديناميكية -->
+            <span id="sync-badge" class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 transition-all duration-300">
+                <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+                <span class="text-slate-400">Checking Status...</span>
             </span>
         </div>
     </header>
@@ -75,8 +76,38 @@
 
     </div>
 
-    <!-- Script for ICS Parsing, UI Separation and Task Checking -->
+    <!-- Script for ICS Parsing, UI Separation, Task Checking and Health Monitoring -->
     <script>
+        // مراقب صحة الأتمتة
+        async function fetchSyncStatus() {
+            try {
+                const response = await fetch('sync_status.json');
+                if(!response.ok) return; // نتجاهل إذا لم يتم إنشاء الملف بعد
+                const data = await response.json();
+                
+                const badge = document.getElementById('sync-badge');
+                const lastSync = new Date(data.timestamp);
+                const now = new Date();
+                const hoursDiff = (now - lastSync) / (1000 * 60 * 60);
+
+                if (data.status === 'error') {
+                    // فشل بسبب حظر الرابط أو عطل في الجامعة
+                    badge.className = 'bg-red-900/30 text-xs px-3 py-1.5 rounded-full border border-red-700/50 flex items-center gap-2 text-red-400';
+                    badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Sync Error: Check Link</span>';
+                } else if (hoursDiff > 5) {
+                    // فشل بسبب توقف خوادم GitHub (مر أكثر من 5 ساعات بدون تحديث)
+                    badge.className = 'bg-orange-900/30 text-xs px-3 py-1.5 rounded-full border border-orange-700/50 flex items-center gap-2 text-orange-400';
+                    badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Automation Paused</span>';
+                } else {
+                    // النظام مستقر تماماً
+                    badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
+                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Auto-Sync Active</span>';
+                }
+            } catch (err) {
+                console.log("Health check skipped: File not found yet.");
+            }
+        }
+
         async function fetchICS() {
             try {
                 const response = await fetch('moodle_data.ics');
@@ -174,11 +205,8 @@
                 const cardAccent = isExam ? 'border-l-emerald-500' : 'border-l-blue-500';
                 const formattedDate = e.start.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-                // إزالة الأرقام والشرطات من بداية ونهاية اسم المساق لضمان النظافة التامة
                 let courseName = e.course || 'مهمة جامعية';
-                courseName = courseName.replace(/^[\d\s_.\-]+/, '')  // التنظيف من البداية
-                                       .replace(/[_\-\s\d]+$/, '')   // التنظيف من النهاية (لحل مشكلة _176)
-                                       .trim();
+                courseName = courseName.replace(/^[\d\s_.\-]+/, '').replace(/[_\-\s\d]+$/, '').trim();
 
                 const uniqueId = btoa(unescape(encodeURIComponent(e.summary + e.start.getTime()))).replace(/[^a-zA-Z0-9]/g, '');
                 const isTaskDone = localStorage.getItem('done_' + uniqueId) === 'true';
@@ -188,26 +216,18 @@
 
                 const cardHtml = `
                     <div class="glass p-4 rounded-xl border-l-4 ${cardAccent} hover:bg-slate-800/50 transition-colors flex justify-between items-center gap-3">
-                        
-                        <!-- Checkmark Button -->
                         <button onclick="toggleTask('${uniqueId}', this)" class="shrink-0 w-7 h-7 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${btnClasses}">
                             <span class="text-xs">✔</span>
                         </button>
-
                         <div class="flex-1 min-w-0">
-                            <!-- Course Badge -->
                             <span class="bg-slate-800 text-blue-300 font-arabic text-[10px] px-2 py-0.5 rounded border border-slate-700 inline-block mb-1.5 truncate max-w-full" dir="rtl" title="${courseName}">
                                 📘 ${courseName}
                             </span>
-                            <!-- Task Title -->
                             <p id="title_${uniqueId}" class="font-bold font-arabic text-sm truncate transition-all ${titleClasses}" title="${e.summary}" dir="auto">${e.summary}</p>
-                            <!-- Date -->
                             <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
                                 📅 ${formattedDate}
                             </p>
                         </div>
-                        
-                        <!-- Countdown Badge -->
                         <div class="text-center px-3 py-1.5 rounded-lg border ${timeBadgeColor} min-w-[80px] shrink-0">
                             <span class="block text-sm font-bold">${days}d ${hours}h</span>
                         </div>
@@ -230,6 +250,8 @@
             document.getElementById('exam-count').innerText = examsCount;
         }
 
+        // تشغيل دوال الاستشعار والبيانات
+        fetchSyncStatus();
         fetchICS();
     </script>
 </body>
