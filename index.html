@@ -23,7 +23,6 @@
             <p class="text-slate-400 text-sm mt-1">Here is the automated overview of your deadlines and exams.</p>
         </div>
         <div class="flex items-center gap-3">
-            <!-- شارة المراقبة الديناميكية -->
             <span id="sync-badge" class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 transition-all duration-300">
                 <span class="w-2 h-2 rounded-full bg-slate-500"></span>
                 <span class="text-slate-400">Checking Status...</span>
@@ -76,35 +75,36 @@
 
     </div>
 
-    <!-- Script for ICS Parsing, UI Separation, Task Checking and Health Monitoring -->
     <script>
-        // مراقب صحة الأتمتة
         async function fetchSyncStatus() {
+            const badge = document.getElementById('sync-badge');
             try {
                 const response = await fetch('sync_status.json');
-                if(!response.ok) return; // نتجاهل إذا لم يتم إنشاء الملف بعد
+                if(!response.ok) {
+                    // الملف لم يتولد بعد لأن الأتمتة لم تعمل للمرة الأولى
+                    badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
+                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span><span>Waiting for first sync...</span>';
+                    return;
+                }
                 const data = await response.json();
                 
-                const badge = document.getElementById('sync-badge');
                 const lastSync = new Date(data.timestamp);
                 const now = new Date();
                 const hoursDiff = (now - lastSync) / (1000 * 60 * 60);
 
                 if (data.status === 'error') {
-                    // فشل بسبب حظر الرابط أو عطل في الجامعة
                     badge.className = 'bg-red-900/30 text-xs px-3 py-1.5 rounded-full border border-red-700/50 flex items-center gap-2 text-red-400';
                     badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Sync Error: Check Link</span>';
                 } else if (hoursDiff > 5) {
-                    // فشل بسبب توقف خوادم GitHub (مر أكثر من 5 ساعات بدون تحديث)
                     badge.className = 'bg-orange-900/30 text-xs px-3 py-1.5 rounded-full border border-orange-700/50 flex items-center gap-2 text-orange-400';
                     badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Automation Paused</span>';
                 } else {
-                    // النظام مستقر تماماً
                     badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
                     badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Auto-Sync Active</span>';
                 }
             } catch (err) {
-                console.log("Health check skipped: File not found yet.");
+                badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
+                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span><span>Waiting for first sync...</span>';
             }
         }
 
@@ -250,7 +250,6 @@
             document.getElementById('exam-count').innerText = examsCount;
         }
 
-        // تشغيل دوال الاستشعار والبيانات
         fetchSyncStatus();
         fetchICS();
     </script>
