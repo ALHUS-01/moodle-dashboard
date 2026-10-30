@@ -23,9 +23,9 @@
             <p class="text-slate-400 text-sm mt-1">Here is the automated overview of your deadlines and exams.</p>
         </div>
         <div class="flex items-center gap-3">
-            <span id="sync-badge" class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 transition-all duration-300">
-                <span class="w-2 h-2 rounded-full bg-slate-500"></span>
-                <span class="text-slate-400">Checking Status...</span>
+            <span class="bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Auto-Sync Active
             </span>
         </div>
     </header>
@@ -75,40 +75,9 @@
 
     </div>
 
+    <!-- Script for ICS Parsing, UI Separation and Task Checking -->
     <script>
-        // إضافة مولد أرقام عشوائي لمنع المتصفح من تخزين البيانات القديمة
         const cacheBuster = '?t=' + new Date().getTime();
-
-        async function fetchSyncStatus() {
-            const badge = document.getElementById('sync-badge');
-            try {
-                const response = await fetch('sync_status.json' + cacheBuster);
-                if(!response.ok) {
-                    badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
-                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span><span>Waiting for first sync...</span>';
-                    return;
-                }
-                const data = await response.json();
-                
-                const lastSync = new Date(data.timestamp);
-                const now = new Date();
-                const hoursDiff = (now - lastSync) / (1000 * 60 * 60);
-
-                if (data.status === 'error') {
-                    badge.className = 'bg-red-900/30 text-xs px-3 py-1.5 rounded-full border border-red-700/50 flex items-center gap-2 text-red-400';
-                    badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Sync Error: Check Link</span>';
-                } else if (hoursDiff > 5) {
-                    badge.className = 'bg-orange-900/30 text-xs px-3 py-1.5 rounded-full border border-orange-700/50 flex items-center gap-2 text-orange-400';
-                    badge.innerHTML = '<span class="text-base">⚠️</span><span class="font-bold">Automation Paused</span>';
-                } else {
-                    badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
-                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Auto-Sync Active</span>';
-                }
-            } catch (err) {
-                badge.className = 'bg-slate-800/80 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2 text-slate-300';
-                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span><span>Waiting for first sync...</span>';
-            }
-        }
 
         async function fetchICS() {
             try {
@@ -252,7 +221,6 @@
             document.getElementById('exam-count').innerText = examsCount;
         }
 
-        fetchSyncStatus();
         fetchICS();
     </script>
 </body>
