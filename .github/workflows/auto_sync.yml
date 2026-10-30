@@ -28,6 +28,6 @@ jobs:
       run: |
         git config --global user.email "bot@husam-dashboard.com"
         git config --global user.name "Auto Sync Bot"
-        git add moodle_data.ics
+        git add
         git commit -m "Auto-update Moodle tasks" || exit 0
         git push
